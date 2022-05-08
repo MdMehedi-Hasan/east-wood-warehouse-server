@@ -41,8 +41,9 @@ async function run() {
     });
     // In below code we are trying to delete an existing product from the server
     app.delete("/products/:id", async (req, res) => {
-      const query = req.body;
-      console.log(query);
+      const id = req.params;
+      const query ={ _id: ObjectId(id) } ;
+      // console.log(id,query);
       const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
