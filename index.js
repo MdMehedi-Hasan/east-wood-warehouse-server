@@ -68,7 +68,9 @@ async function run() {
 }
 run().catch(console.dir);
 // MongoDB connection ends
-
+app.get("/", (req, res) => {
+  res.send('Running Eastwood API')
+})
 app.listen(port, () => {
   console.log(`Assignment 11 app listening on port ${port}`);
 });
