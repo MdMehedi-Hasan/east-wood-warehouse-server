@@ -48,7 +48,8 @@ async function run() {
       res.send(result);
     });
     // deliver stock (updating quantity)
-    app.put("/products/:id", async(req, res) => {
+    app.put("/products/:id", async (req, res) => {
+      console.log("This is from id route",req.body)
       const id = req.params;
       const filter = { _id: ObjectId(id) };
       const productQnt = req.body.quantity;
@@ -60,9 +61,37 @@ async function run() {
         },
       };
       const updatedQnt = await productsCollection.updateOne(filter, updateProduct, options);
-      console.log(req.body.quantity);
       res.send(updatedQnt);
     });
+    // ===================================
+    app.get("/product", async (req, res) => {
+      const query = {};
+      const cursor = productsCollection.find(query);
+      const products = await cursor.toArray(query);
+      res.send(products);
+    });
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const product = await productsCollection.findOne(query);
+      res.send(product);
+    });
+    app.put("/product/:id", async (req, res) => {
+      const forQntId = req.params;
+      const filter = { _id: ObjectId(forQntId) };
+      const productQnt = req.body.quantity;
+      // const newQnt = productQnt;
+      const options = { upsert: true };
+      const updateProduct = {
+        $set: {
+          productQnt
+        },
+      };
+      const updatedQuantity = await productsCollection.updateOne(filter, updateProduct, options);
+      console.log("This is from qnty route",req.body,updatedQuantity)
+      res.send(updatedQuantity);
+    });
+    
   } finally {
     // await client.close();
   }
