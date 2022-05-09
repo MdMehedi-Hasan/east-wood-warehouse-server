@@ -43,13 +43,11 @@ async function run() {
     app.delete("/products/:id", async (req, res) => {
       const id = req.params;
       const query ={ _id: ObjectId(id) } ;
-      // console.log(id,query);
       const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
     // deliver stock (updating quantity)
     app.put("/products/:id", async (req, res) => {
-      console.log("This is from id route",req.body)
       const id = req.params;
       const filter = { _id: ObjectId(id) };
       const productQnt = req.body.quantity;
@@ -63,7 +61,7 @@ async function run() {
       const updatedQnt = await productsCollection.updateOne(filter, updateProduct, options);
       res.send(updatedQnt);
     });
-    // ===================================
+    // ===== The whole below code is rewritten just to execute updated stock ===============
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = productsCollection.find(query);
@@ -86,10 +84,9 @@ async function run() {
         },
       };
       const updatedQuantity = await productsCollection.updateOne(filter, updateProduct);
-      console.log("This is from qnty route",req.body,forQntId,productQnt,0)
       res.send(updatedQuantity);
     });
-    
+    // ============================  End  =================================
   } finally {
     // await client.close();
   }
