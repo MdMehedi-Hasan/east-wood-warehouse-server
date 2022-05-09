@@ -70,25 +70,23 @@ async function run() {
       const products = await cursor.toArray(query);
       res.send(products);
     });
-    app.get("/product/:id", async (req, res) => {
+    app.get("/product/:qnt", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const product = await productsCollection.findOne(query);
       res.send(product);
     });
-    app.put("/product/:id", async (req, res) => {
-      const forQntId = req.params;
+    app.put("/product/:qnt", async (req, res) => {
+      const forQntId = req.params.qnt;
+      const productQnt = req.body.tQuantity;
       const filter = { _id: ObjectId(forQntId) };
-      const productQnt = req.body.quantity;
-      // const newQnt = productQnt;
-      const options = { upsert: true };
       const updateProduct = {
         $set: {
-          productQnt
+          quantity: productQnt
         },
       };
-      const updatedQuantity = await productsCollection.updateOne(filter, updateProduct, options);
-      console.log("This is from qnty route",req.body,updatedQuantity)
+      const updatedQuantity = await productsCollection.updateOne(filter, updateProduct);
+      console.log("This is from qnty route",req.body,forQntId,productQnt,0)
       res.send(updatedQuantity);
     });
     
